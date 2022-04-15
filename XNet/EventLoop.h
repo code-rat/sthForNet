@@ -26,6 +26,63 @@ namespace net
     public:
         typedef std::function<void()> Functor;
 
+        EventLoop();
+        ~EventLoop();
+
+        void loop();
+
+        void quit();
+
+        Timestamp pollReturnTime()const{return m_pollReturnTime;}
+
+        int64_t iteration()const {return m_iteration;}
+
+        void runInLoop(const Functor& cb);
+
+        void queueInLoop(const Functor& cb);
+
+        TimerId runAt(const Timestamp& time,const TimerCallback& cb);
+
+        TimerId runAfter(int64_t delay,const TimerCallback& cb);
+
+        TimerId runEvery(int64_t interval,const TimerCallback& cb);
+
+        void cancel(TimerId timerId,bool off);
+
+        void remove(TimerId timerId);
+
+        TimerId runAt(const Timestamp& time,TimerCallback&& cb);
+        TimerId runAfter(int64_t delay,TimerCallback&& cb);
+        TimerId runEvery(int64_t interval,TimerCallback&& cb);
+
+        void setFrameFunctor(const Functor& cb);
+
+        //internal usage
+        bool updateChannel(Channel* channel);
+        void removeChannel(Channel* channel);
+        bool hasChannel(Channel* channel);
+
+        void assertInLoopThread(){
+            if(!isInLoopThread()){
+                aborNotInLoopThread();
+            }
+        }
+        bool isInLoopThread()const{return m_threadId==std::this_thread::get_id();}
+        bool eventHandling()const {return m_eventHandling;}
+
+        const std::thread::id getThreadID()const{
+            return m_threadId;
+        }
+
+    private:
+        bool createWakeupfd();
+        bool wakeup();
+        void aborNotInLoopThread();
+        bool handleRead();
+        void doOtherTasks();
+
+        void printActiveChannels() const;
+
     private:
         typedef std::vector<Channel*> ChannelList;
 
