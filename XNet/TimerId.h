@@ -20,6 +20,8 @@ namespace net
         {
             return _timer;
         }
+
+        friend class TimerQueue;
     private:
         Timer* _timer;
         int64_t _sequence;

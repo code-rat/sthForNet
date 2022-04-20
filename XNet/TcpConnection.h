@@ -28,7 +28,7 @@ namespace net{
 
         void send(const void* message,int len);
         void send(const string& message);
-        void send(ByteBuffer* message);
+        void send(ByteBuffer* buf);
         void shutdown();
         void forceClose();
 

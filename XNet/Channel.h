@@ -32,7 +32,7 @@ namespace net
         {
             m_closeCallback=cb;
         }
-        void setErrotCallback(const EventCallback& cb)
+        void setErrorCallback(const EventCallback& cb)
         {
             m_errorCallback=cb;
         }
